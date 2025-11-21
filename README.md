@@ -157,3 +157,4 @@ This project is built for the Rutgers Jumu'ah community.
 ---
 
 **Rutgers Jumu'ah • Built for the community**
+# jummah
