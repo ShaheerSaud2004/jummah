@@ -67,6 +67,17 @@ const Navbar = () => {
                 {item.label}
               </Link>
             ))}
+            {/* Additional Community button - always visible */}
+            <Link
+              to="/community"
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 min-h-[44px] flex items-center touch-manipulation active:scale-95 ${
+                isActive('/community')
+                  ? 'text-rutgers-red bg-red-50'
+                  : 'text-gray-700 hover:text-rutgers-red hover:bg-red-50'
+              }`}
+            >
+              Community
+            </Link>
           </div>
           <div className="hidden md:flex lg:hidden items-center space-x-2">
             {navItems.slice(0, 4).map((item) => (
@@ -82,6 +93,17 @@ const Navbar = () => {
                 {item.label}
               </Link>
             ))}
+            {/* Additional Community button for tablet - always visible */}
+            <Link
+              to="/community"
+              className={`px-3 py-2 rounded-md text-xs font-medium transition-all duration-200 min-h-[44px] flex items-center touch-manipulation active:scale-95 ${
+                isActive('/community')
+                  ? 'text-rutgers-red bg-red-50'
+                  : 'text-gray-700 hover:text-rutgers-red hover:bg-red-50'
+              }`}
+            >
+              Community
+            </Link>
           </div>
 
           {/* Mobile menu button - 44x44px touch target */}
