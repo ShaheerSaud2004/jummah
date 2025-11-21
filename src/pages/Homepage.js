@@ -1,11 +1,79 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import khateebsData from '../data/khateebs.json';
-import weeklyContentData from '../data/weeklyContent.json';
+import { getData } from '../utils/dataManager';
 import OptimizedImage from '../components/OptimizedImage';
+import LivestreamEmbed from '../components/LivestreamEmbed';
 import logoImage from '../assets/logo.jpg';
 
 const Homepage = () => {
+  const [khateebsData, setKhateebsData] = useState([]);
+  const [weeklyContentData, setWeeklyContentData] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [pullDistance, setPullDistance] = useState(0);
+  const touchStartY = useRef(0);
+  const touchCurrentY = useRef(0);
+
+  const loadData = () => {
+    setKhateebsData(getData('khateebs'));
+    setWeeklyContentData(getData('weeklyContent'));
+  };
+
+  useEffect(() => {
+    loadData();
+    window.addEventListener('dataUpdated', loadData);
+    return () => window.removeEventListener('dataUpdated', loadData);
+  }, []);
+
+  // Pull-to-refresh functionality
+  useEffect(() => {
+    const handleTouchStart = (e) => {
+      if (window.scrollY === 0) {
+        touchStartY.current = e.touches[0].clientY;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (window.scrollY === 0 && touchStartY.current > 0) {
+        touchCurrentY.current = e.touches[0].clientY;
+        const distance = touchCurrentY.current - touchStartY.current;
+        
+        if (distance > 0 && distance < 150) {
+          setPullDistance(distance);
+          e.preventDefault();
+        }
+      }
+    };
+
+    const handleTouchEnd = () => {
+      if (pullDistance > 80) {
+        setIsRefreshing(true);
+        // Reload data
+        setTimeout(() => {
+          loadData();
+          setIsRefreshing(false);
+          setPullDistance(0);
+        }, 1000);
+      } else {
+        setPullDistance(0);
+      }
+      touchStartY.current = 0;
+      touchCurrentY.current = 0;
+    };
+
+    // Only enable on mobile
+    if (window.innerWidth <= 768) {
+      document.addEventListener('touchstart', handleTouchStart, { passive: true });
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd, { passive: true });
+    }
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [pullDistance]);
+
   // Get the next upcoming khateeb
   const upcomingKhateeb = khateebsData.find(khateeb => khateeb.isUpcoming);
   
@@ -13,7 +81,32 @@ const Homepage = () => {
   const recentContent = weeklyContentData.slice(-2);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overscroll-contain" style={{ overscrollBehaviorY: 'contain' }}>
+      {/* Pull-to-refresh indicator */}
+      {pullDistance > 0 && (
+        <div 
+          className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center bg-rutgers-red/10 transition-opacity"
+          style={{ 
+            height: `${Math.min(pullDistance, 80)}px`,
+            opacity: Math.min(pullDistance / 80, 1)
+          }}
+        >
+          {isRefreshing ? (
+            <div className="flex items-center space-x-2 text-rutgers-red">
+              <div className="w-5 h-5 border-2 border-rutgers-red border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-sm font-semibold">Refreshing...</span>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2 text-rutgers-red">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+              <span className="text-sm font-semibold">Pull to refresh</span>
+            </div>
+          )}
+        </div>
+      )}
+      
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-rutgers-red via-rutgers-light-red to-rutgers-dark-red text-white py-24 relative overflow-hidden">
         {/* Animated Background Elements */}
@@ -77,11 +170,14 @@ const Homepage = () => {
             </div>
             
             <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mb-8">
-              Stories from your Rutgers Jumu'ah Community. Join us every Friday at 1:20 pm at the Cook Student Center MPR!
+              Stories from your Rutgers Jumu'ah Community. Join us every Friday at 1:20 pm at the Cook Student Center MPR! Al-Kahf Circle at 12:30 PM.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Link to="/khateebs" className="group relative px-8 py-4 bg-rutgers-red hover:bg-rutgers-dark-red text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl overflow-hidden">
+              <Link 
+                to="/khateebs" 
+                className="group relative px-8 py-4 bg-rutgers-red hover:bg-rutgers-dark-red active:bg-rutgers-dark-red text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-2xl overflow-hidden touch-manipulation min-h-[44px] flex items-center justify-center"
+              >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                 <span className="relative flex items-center justify-center">
                   <svg className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,7 +186,10 @@ const Homepage = () => {
                   View Khateebs
                 </span>
               </Link>
-              <Link to="/community" className="group relative px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 hover:bg-white/20 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
+              <Link 
+                to="/community" 
+                className="group relative px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 hover:bg-white/20 active:bg-white/25 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-2xl touch-manipulation min-h-[44px] flex items-center justify-center"
+              >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                 <span className="relative flex items-center justify-center">
                   <svg className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,7 +203,16 @@ const Homepage = () => {
         </div>
       </section>
 
-        {/* Weekly Khutbah Card */}
+      {/* Livestream Section */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
+            <LivestreamEmbed />
+          </div>
+        </div>
+      </section>
+
+      {/* Weekly Khutbah Card */}
         {upcomingKhateeb && (
           <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
             {/* Background Decorative Elements */}
@@ -207,7 +315,7 @@ const Homepage = () => {
                     </div>
                     
                     <p className="text-sm text-gray-600 italic">
-                      Surah Al-Kahf Circle at 12:50 PM
+                      Al-Kahf Circle at 12:30 PM
                     </p>
                   </div>
                 </div>
@@ -264,6 +372,32 @@ const Homepage = () => {
         </div>
       </section>
 
+      {/* Adab & Conduct Notice */}
+      <section className="py-12 bg-gradient-to-r from-red-50 to-red-100 border-y-2 border-red-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto">
+            <div className="flex items-start">
+              <div className="text-4xl mr-4 flex-shrink-0">🤲</div>
+              <div>
+                <h3 className="text-xl font-serif font-bold text-rutgers-red mb-3">
+                  Adab & Conduct in the Musalla
+                </h3>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  Please maintain respectful conduct in the musalla. <strong>Do not talk when the khateeb enters or during the khutbah.</strong> 
+                  Clean up any snack debris and help keep our space welcoming for everyone.
+                </p>
+                <Link to="/adab" className="text-rutgers-red hover:text-rutgers-dark-red font-semibold inline-flex items-center">
+                  Learn more about adab guidelines
+                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Community Section Preview */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -274,53 +408,51 @@ const Homepage = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="card-rutgers p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
+            <Link to="/team-application" className="card-rutgers p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
               <div className="w-20 h-20 bg-gradient-to-br from-rutgers-red to-rutgers-dark-red rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                 <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                 </svg>
               </div>
               <h3 className="text-xl font-serif font-bold text-rutgers-red mb-3">Join Our Team</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">Apply for leadership positions and get involved in organizing events</p>
-              <Link to="/community" className="inline-flex items-center text-rutgers-red font-semibold hover:text-rutgers-dark-red transition-colors duration-200">
-                Learn More 
+              <p className="text-gray-600 mb-6 leading-relaxed">Apply to be a "Janitor" and serve the community</p>
+              <span className="inline-flex items-center text-rutgers-red font-semibold group-hover:text-rutgers-dark-red transition-colors duration-200">
+                Apply Now 
                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </Link>
-            </div>
+              </span>
+            </Link>
             
-            <div className="card-rutgers p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
+            <Link to="/parking" className="card-rutgers p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
               <div className="w-20 h-20 bg-gradient-to-br from-rutgers-red to-rutgers-dark-red rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                 <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-serif font-bold text-rutgers-red mb-3">Request Forms</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">Submit announcements, feedback, or request materials</p>
-              <Link to="/community" className="inline-flex items-center text-rutgers-red font-semibold hover:text-rutgers-dark-red transition-colors duration-200">
+              <h3 className="text-xl font-serif font-bold text-rutgers-red mb-3">Parking & Forms</h3>
+              <p className="text-gray-600 mb-6 leading-relaxed">Request parking permits and access community forms</p>
+              <span className="inline-flex items-center text-rutgers-red font-semibold group-hover:text-rutgers-dark-red transition-colors duration-200">
                 View Forms 
                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </Link>
-            </div>
+              </span>
+            </Link>
             
-            <div className="card-rutgers p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
+            <Link to="/kahf-circle" className="card-rutgers p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
               <div className="w-20 h-20 bg-gradient-to-br from-rutgers-red to-rutgers-dark-red rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
+                <span className="text-4xl">📖</span>
               </div>
-              <h3 className="text-xl font-serif font-bold text-rutgers-red mb-3">Stay Connected</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">Follow us on social media and join our email list</p>
-              <Link to="/community" className="inline-flex items-center text-rutgers-red font-semibold hover:text-rutgers-dark-red transition-colors duration-200">
-                Connect 
+              <h3 className="text-xl font-serif font-bold text-rutgers-red mb-3">Al-Kahf Circle</h3>
+              <p className="text-gray-600 mb-6 leading-relaxed">Join us every Friday at 12:30 PM</p>
+              <span className="inline-flex items-center text-rutgers-red font-semibold group-hover:text-rutgers-dark-red transition-colors duration-200">
+                Learn More 
                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </Link>
-            </div>
+              </span>
+            </Link>
           </div>
         </div>
       </section>

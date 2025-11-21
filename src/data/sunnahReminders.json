@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "title": "Ghusl (Ritual Bath)",
+    "description": "Performing ghusl on Friday is a sunnah that purifies and prepares you for the blessed day.",
+    "arabic": "الغُسْلُ يَوْمَ الْجُمُعَةِ",
+    "reference": "Sahih Bukhari"
+  },
+  {
+    "id": 2,
+    "title": "Wearing Clean Clothes",
+    "description": "Wear your best and cleanest clothes for Jumu'ah as a sign of respect and preparation for the blessed gathering.",
+    "arabic": "وَيَوْمَ الْجُمُعَةِ عَلَيْكُمْ سِوَاكٌ",
+    "reference": "Sunnah"
+  },
+  {
+    "id": 3,
+    "title": "Using Miswak (Toothbrush)",
+    "description": "Using miswak or brushing your teeth before Jumu'ah is highly recommended and brings great reward.",
+    "arabic": "السِّوَاكُ",
+    "reference": "Sunnah"
+  },
+  {
+    "id": 4,
+    "title": "Early Arrival",
+    "description": "Arrive early to the masjid. The earlier you come, the greater the reward. Try to be there before the khateeb arrives.",
+    "arabic": "مَنْ غَسَّلَ يَوْمَ الْجُمُعَةِ وَاغْتَسَلَ",
+    "reference": "Sahih Muslim"
+  },
+  {
+    "id": 5,
+    "title": "Reading Surah Al-Kahf",
+    "description": "Reading Surah Al-Kahf on Friday brings light and protection. Join our Kahf Circle at 12:30 PM to read it together.",
+    "arabic": "مَنْ قَرَأَ سُورَةَ الْكَهْفِ يَوْمَ الْجُمُعَةِ",
+    "reference": "Sahih Bukhari"
+  },
+  {
+    "id": 6,
+    "title": "Sending Salawaat",
+    "description": "Increase your salawaat (blessings) upon the Prophet (peace be upon him) throughout Friday.",
+    "arabic": "أَكْثِرُوا الصَّلَاةَ عَلَيَّ يَوْمَ الْجُمُعَةِ",
+    "reference": "Sunan Ibn Majah"
+  },
+  {
+    "id": 7,
+    "title": "Listening Attentively",
+    "description": "When the khateeb begins, give your full attention. Avoid talking or distractions during the khutbah.",
+    "arabic": "إِذَا قُلْتَ لِصَاحِبِكَ يَوْمَ الْجُمُعَةِ أَنْصِتْ",
+    "reference": "Sahih Bukhari"
+  }
+]
+

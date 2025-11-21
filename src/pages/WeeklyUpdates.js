@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
-import weeklyContentData from '../data/weeklyContent.json';
+import React, { useState, useEffect } from 'react';
+import { getData } from '../utils/dataManager';
 
 const WeeklyUpdates = () => {
   const [selectedType, setSelectedType] = useState('all'); // 'all', 'ayah', 'dua'
+  const [weeklyContentData, setWeeklyContentData] = useState([]);
+
+  useEffect(() => {
+    const loadData = () => setWeeklyContentData(getData('weeklyContent'));
+    loadData();
+    window.addEventListener('dataUpdated', loadData);
+    return () => window.removeEventListener('dataUpdated', loadData);
+  }, []);
 
   const getFilteredContent = () => {
     if (selectedType === 'all') {

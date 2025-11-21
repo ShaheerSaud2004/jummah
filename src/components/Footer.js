@@ -70,9 +70,14 @@ const Footer = () => {
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li><a href="/khateebs" className="text-sm opacity-90 hover:opacity-100 transition-opacity">Khateebs</a></li>
+              <li><a href="/kahf-circle" className="text-sm opacity-90 hover:opacity-100 transition-opacity">Al-Kahf Circle</a></li>
+              <li><a href="/gems" className="text-sm opacity-90 hover:opacity-100 transition-opacity">Gems</a></li>
+              <li><a href="/salawaat" className="text-sm opacity-90 hover:opacity-100 transition-opacity">Salawaat Series</a></li>
               <li><a href="/community" className="text-sm opacity-90 hover:opacity-100 transition-opacity">Community</a></li>
+              <li><a href="/team" className="text-sm opacity-90 hover:opacity-100 transition-opacity">Team</a></li>
+              <li><a href="/hoj" className="text-sm opacity-90 hover:opacity-100 transition-opacity">HOJ</a></li>
               <li><a href="/about" className="text-sm opacity-90 hover:opacity-100 transition-opacity">About</a></li>
-              <li><a href="/updates" className="text-sm opacity-90 hover:opacity-100 transition-opacity">Weekly Updates</a></li>
+              <li><a href="/admin/login" className="text-sm opacity-60 hover:opacity-100 transition-opacity">Admin</a></li>
             </ul>
           </div>
 

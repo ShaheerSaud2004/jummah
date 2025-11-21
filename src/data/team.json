@@ -1,0 +1,58 @@
+{
+  "subteams": [
+    {
+      "id": "logistics",
+      "name": "Logistics",
+      "description": "The backbone of every event. Our logistics team ensures everything runs smoothly, from setup to cleanup.",
+      "members": [
+        {
+          "name": "Team Member",
+          "role": "Logistics Coordinator",
+          "quote": "Service to others is the rent you pay for your room here on earth.",
+          "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
+        }
+      ]
+    },
+    {
+      "id": "outreach",
+      "name": "Outreach",
+      "description": "Connecting with the community and spreading the message of Jumu'ah through various channels.",
+      "members": [
+        {
+          "name": "Team Member",
+          "role": "Outreach Coordinator",
+          "quote": "Building bridges, one connection at a time.",
+          "image": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face"
+        }
+      ]
+    },
+    {
+      "id": "content",
+      "name": "Content",
+      "description": "Creating meaningful content that inspires and educates our community.",
+      "members": [
+        {
+          "name": "Team Member",
+          "role": "Content Creator",
+          "quote": "Words have power. We use ours to uplift and inspire.",
+          "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face"
+        }
+      ]
+    },
+    {
+      "id": "janitors",
+      "name": "Janitors",
+      "description": "The heart of our team. Janitors are dedicated volunteers who serve the community with humility and dedication, ensuring our space is welcoming and clean for everyone.",
+      "members": [
+        {
+          "name": "Team Member",
+          "role": "Janitor",
+          "quote": "Service is not about recognition; it's about making a difference.",
+          "image": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face"
+        }
+      ]
+    }
+  ],
+  "mission": "Being a 'Janitor' means serving the community with humility, dedication, and love. It's about recognizing that every role, no matter how small it may seem, is essential to building a thriving Muslim community at Rutgers."
+}
+

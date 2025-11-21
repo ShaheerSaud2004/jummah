@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
-import khateebsData from '../data/khateebs.json';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { getData } from '../utils/dataManager';
 import OptimizedImage from '../components/OptimizedImage';
 
 const Khateebs = () => {
   const [filter, setFilter] = useState('all'); // 'all', 'upcoming', 'past'
+  const [khateebsData, setKhateebsData] = useState([]);
+
+  useEffect(() => {
+    const loadData = () => setKhateebsData(getData('khateebs'));
+    loadData();
+    window.addEventListener('dataUpdated', loadData);
+    return () => window.removeEventListener('dataUpdated', loadData);
+  }, []);
 
   const upcomingKhateebs = khateebsData.filter(khateeb => khateeb.isUpcoming);
   const pastKhateebs = khateebsData.filter(khateeb => !khateeb.isUpcoming);
@@ -80,7 +89,7 @@ const Khateebs = () => {
         {/* Khateebs Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {getFilteredKhateebs().map((khateeb) => (
-            <div key={khateeb.id} className="card hover:shadow-rutgers-lg transition-shadow duration-200">
+            <Link key={khateeb.id} to={`/khateebs/${khateeb.id}`} className="card hover:shadow-rutgers-lg transition-shadow duration-200 block">
               {/* Khateeb Image */}
               <div className="relative">
                 <OptimizedImage
@@ -129,11 +138,11 @@ const Khateebs = () => {
                     </div>
                   </div>
                   <p className="text-xs text-gray-600 mt-2 italic">
-                    Al-Kahf Circle at 12:50 PM
+                    Al-Kahf Circle at 12:30 PM
                   </p>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

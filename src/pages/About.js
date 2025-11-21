@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import OptimizedImage from '../components/OptimizedImage';
 
 const About = () => {
@@ -256,7 +257,7 @@ const About = () => {
               </div>
               <div className="bg-red-50 p-4 rounded-lg">
                 <h4 className="font-semibold text-rutgers-red mb-2">Al-Kahf Circle</h4>
-                <p className="text-gray-700">12:50 PM (before khutbah)</p>
+                <p className="text-gray-700">12:30 PM (before khutbah)</p>
               </div>
             </div>
             
@@ -275,6 +276,9 @@ const About = () => {
               >
                 Contact Us
               </a>
+              <Link to="/adab" className="btn-secondary">
+                Adab Guidelines
+              </Link>
             </div>
           </div>
         </section>

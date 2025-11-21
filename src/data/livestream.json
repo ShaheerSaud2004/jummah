@@ -1,0 +1,8 @@
+{
+  "isLive": false,
+  "livestreamUrl": "",
+  "embedUrl": "",
+  "platform": "instagram",
+  "note": "Livestream will be available when Jumu'ah is in session. Check back on Fridays at 1:20 PM or follow us on Instagram @rutgersjumuah for updates.",
+  "instructions": "For Instagram Live: Set 'isLive' to true, add the Instagram Live URL (e.g., https://www.instagram.com/rutgersjumuah/ or the direct live link), and set 'platform' to 'instagram'. Note: Instagram Live cannot be embedded directly, so users will be directed to watch on Instagram."
+}

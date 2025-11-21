@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Community = () => {
   const forms = [
@@ -85,6 +86,30 @@ const Community = () => {
       ),
       link: 'https://forms.google.com/khutbah-topic-request',
       isExternal: true
+    },
+    {
+      id: 8,
+      title: 'Parking Permit Request',
+      description: 'Request a parking permit for Jumu\'ah events at Cook Student Center.',
+      icon: (
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+        </svg>
+      ),
+      link: '/parking',
+      isExternal: false
+    },
+    {
+      id: 9,
+      title: 'Team Application',
+      description: 'Apply to join the Rutgers Jumu\'ah team and serve the community.',
+      icon: (
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+        </svg>
+      ),
+      link: '/team-application',
+      isExternal: false
     }
   ];
 
@@ -162,14 +187,23 @@ const Community = () => {
                     {form.description}
                   </p>
                   
-                  <a
-                    href={form.link}
-                    target={form.isExternal ? "_blank" : "_self"}
-                    rel={form.isExternal ? "noopener noreferrer" : ""}
-                    className="btn-primary w-full text-center block"
-                  >
-                    Open Form
-                  </a>
+                  {form.isExternal ? (
+                    <a
+                      href={form.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary w-full text-center block"
+                    >
+                      Open Form
+                    </a>
+                  ) : (
+                    <Link
+                      to={form.link}
+                      className="btn-primary w-full text-center block"
+                    >
+                      Open Form
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}
@@ -274,6 +308,68 @@ const Community = () => {
           </div>
         </section>
 
+        {/* Quick Links Section */}
+        <section className="mb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-serif font-bold text-rutgers-red mb-4">
+              Quick Links
+            </h2>
+            <p className="text-gray-600">
+              Access important pages and resources
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Link to="/kahf-circle" className="card p-6 text-center hover:shadow-rutgers-lg transition-all duration-200 group">
+              <div className="text-4xl mb-3">📖</div>
+              <h3 className="font-semibold text-rutgers-red group-hover:text-rutgers-dark-red">Al-Kahf Circle</h3>
+              <p className="text-sm text-gray-600">Every Friday 12:30 PM</p>
+            </Link>
+
+            <Link to="/gems" className="card p-6 text-center hover:shadow-rutgers-lg transition-all duration-200 group">
+              <div className="text-4xl mb-3">💎</div>
+              <h3 className="font-semibold text-rutgers-red group-hover:text-rutgers-dark-red">Gems</h3>
+              <p className="text-sm text-gray-600">Weekly wisdom</p>
+            </Link>
+
+            <Link to="/salawaat" className="card p-6 text-center hover:shadow-rutgers-lg transition-all duration-200 group">
+              <div className="text-4xl mb-3">📿</div>
+              <h3 className="font-semibold text-rutgers-red group-hover:text-rutgers-dark-red">Salawaat Series</h3>
+              <p className="text-sm text-gray-600">Beautiful salawaat</p>
+            </Link>
+
+            <Link to="/team" className="card p-6 text-center hover:shadow-rutgers-lg transition-all duration-200 group">
+              <div className="text-4xl mb-3">👥</div>
+              <h3 className="font-semibold text-rutgers-red group-hover:text-rutgers-dark-red">Our Team</h3>
+              <p className="text-sm text-gray-600">Meet the Janitors</p>
+            </Link>
+
+            <Link to="/sunnah-reminders" className="card p-6 text-center hover:shadow-rutgers-lg transition-all duration-200 group">
+              <div className="text-4xl mb-3">🌙</div>
+              <h3 className="font-semibold text-rutgers-red group-hover:text-rutgers-dark-red">Sunnah Reminders</h3>
+              <p className="text-sm text-gray-600">Friday practices</p>
+            </Link>
+
+            <Link to="/parking" className="card p-6 text-center hover:shadow-rutgers-lg transition-all duration-200 group">
+              <div className="text-4xl mb-3">🚗</div>
+              <h3 className="font-semibold text-rutgers-red group-hover:text-rutgers-dark-red">Parking</h3>
+              <p className="text-sm text-gray-600">Request permit</p>
+            </Link>
+
+            <Link to="/team-application" className="card p-6 text-center hover:shadow-rutgers-lg transition-all duration-200 group">
+              <div className="text-4xl mb-3">📝</div>
+              <h3 className="font-semibold text-rutgers-red group-hover:text-rutgers-dark-red">Apply to Team</h3>
+              <p className="text-sm text-gray-600">Join us</p>
+            </Link>
+
+            <Link to="/adab" className="card p-6 text-center hover:shadow-rutgers-lg transition-all duration-200 group">
+              <div className="text-4xl mb-3">🤲</div>
+              <h3 className="font-semibold text-rutgers-red group-hover:text-rutgers-dark-red">Adab & Conduct</h3>
+              <p className="text-sm text-gray-600">Guidelines</p>
+            </Link>
+          </div>
+        </section>
+
         {/* Call to Action */}
         <div className="text-center">
           <div className="card-rutgers p-8 max-w-2xl mx-auto">
@@ -282,7 +378,7 @@ const Community = () => {
             </h3>
             <p className="text-gray-600 mb-6">
               Whether you're a new student or a returning member, there's always a place for you in our community. 
-              Come join us every Friday at 1:20 PM at the Cook Student Center MPR!
+              Come join us every Friday at 1:20 PM at the Cook Student Center MPR! Al-Kahf Circle at 12:30 PM.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a

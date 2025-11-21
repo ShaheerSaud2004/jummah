@@ -5,20 +5,80 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    /* iOS smooth scrolling */
+    -webkit-overflow-scrolling: touch;
+    /* Overscroll control */
+    overscroll-behavior-y: contain;
   }
   
   body {
     font-family: 'Inter', system-ui, sans-serif;
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    /* Font smoothing for better text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Word wrapping for long text */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    /* Prevent pull-to-refresh on body (will be handled on homepage) */
+    overscroll-behavior-y: none;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Touch targets - minimum 44x44px */
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  [tabindex] {
+    min-height: 44px;
+    min-width: 44px;
+    /* Touch action manipulation for better touch response */
+    touch-action: manipulation;
+  }
+
+  /* Active states with scale feedback for touch */
+  button:active,
+  a:active,
+  [role="button"]:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-rutgers-red hover:bg-rutgers-dark-red text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-rutgers;
+    @apply bg-rutgers-red hover:bg-rutgers-dark-red active:bg-rutgers-dark-red text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-rutgers;
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+    /* Scale feedback on touch */
+    @apply active:scale-95;
   }
   
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-rutgers-red font-semibold py-3 px-6 rounded-lg border-2 border-rutgers-red transition-colors duration-200;
+    @apply bg-white hover:bg-gray-50 active:bg-gray-100 text-rutgers-red font-semibold py-3 px-6 rounded-lg border-2 border-rutgers-red transition-all duration-200;
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+    /* Scale feedback on touch */
+    @apply active:scale-95;
   }
   
   .card {
@@ -105,4 +165,68 @@
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  /* Shorter animations on mobile for better performance */
+  .animate-float,
+  .animate-glow,
+  .animate-shimmer,
+  .animate-pulse-glow {
+    animation-duration: 3s;
+  }
+
+  /* Prevent text selection on buttons during touch */
+  button,
+  [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  /* Better spacing for mobile */
+  .card {
+    @apply p-4;
+  }
+}
+
+/* iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari smooth scrolling */
+  #root {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Prevent iOS text size adjustment on orientation change */
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+/* Horizontal scroll prevention */
+* {
+  max-width: 100%;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Word wrapping for long text */
+p,
+span,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
