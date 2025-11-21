@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getData } from '../utils/dataManager';
 import OptimizedImage from '../components/OptimizedImage';
 import LivestreamEmbed from '../components/LivestreamEmbed';
+import UpcomingEventsWidget from '../components/UpcomingEventsWidget';
 import logoImage from '../assets/logo.jpg';
 
 const Homepage = () => {
@@ -324,6 +325,15 @@ const Homepage = () => {
           </div>
         </section>
       )}
+
+      {/* Upcoming Events Widget */}
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <UpcomingEventsWidget />
+          </div>
+        </div>
+      </section>
 
       {/* Weekly Updates Preview */}
       <section className="py-20 bg-gradient-to-b from-white to-gray-50">

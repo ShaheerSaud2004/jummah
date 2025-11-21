@@ -10,6 +10,7 @@ import kahfCircleData from '../data/kahfCircle.json';
 import livestreamData from '../data/livestream.json';
 import teamData from '../data/team.json';
 import sunnahRemindersData from '../data/sunnahReminders.json';
+import eventsData from '../data/events.json';
 
 const DATA_KEYS = {
   khateebs: 'jummah_khateebs',
@@ -19,7 +20,8 @@ const DATA_KEYS = {
   kahfCircle: 'jummah_kahf_circle',
   livestream: 'jummah_livestream',
   team: 'jummah_team',
-  sunnahReminders: 'jummah_sunnah_reminders'
+  sunnahReminders: 'jummah_sunnah_reminders',
+  events: 'jummah_events'
 };
 
 const defaultData = {
@@ -30,7 +32,8 @@ const defaultData = {
   kahfCircle: kahfCircleData,
   livestream: livestreamData,
   team: teamData,
-  sunnahReminders: sunnahRemindersData
+  sunnahReminders: sunnahRemindersData,
+  events: eventsData
 };
 
 // Initialize data in localStorage if not present

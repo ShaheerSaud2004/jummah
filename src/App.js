@@ -20,6 +20,7 @@ import Team from './pages/Team';
 import SunnahReminders from './pages/SunnahReminders';
 import HOJ from './pages/HOJ';
 import Adab from './pages/Adab';
+import Calendar from './pages/Calendar';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminKhateebs from './pages/admin/AdminKhateebs';
@@ -30,6 +31,7 @@ import AdminKahfCircle from './pages/admin/AdminKahfCircle';
 import AdminLivestream from './pages/admin/AdminLivestream';
 import AdminTeam from './pages/admin/AdminTeam';
 import AdminSunnahReminders from './pages/admin/AdminSunnahReminders';
+import AdminEvents from './pages/admin/AdminEvents';
 import AdminSettings from './pages/admin/AdminSettings';
 
 function App() {
@@ -54,6 +56,7 @@ function App() {
             <Route path="/sunnah-reminders" element={<SunnahReminders />} />
             <Route path="/hoj" element={<HOJ />} />
             <Route path="/adab" element={<Adab />} />
+            <Route path="/calendar" element={<Calendar />} />
             
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
@@ -66,6 +69,7 @@ function App() {
             <Route path="/admin/livestream" element={<AdminRoute><AdminLivestream /></AdminRoute>} />
             <Route path="/admin/team" element={<AdminRoute><AdminTeam /></AdminRoute>} />
             <Route path="/admin/sunnah-reminders" element={<AdminRoute><AdminSunnahReminders /></AdminRoute>} />
+            <Route path="/admin/events" element={<AdminRoute><AdminEvents /></AdminRoute>} />
             <Route path="/admin/settings" element={<AdminRoute><AdminSettings /></AdminRoute>} />
           </Routes>
         </main>

@@ -9,7 +9,8 @@ const AdminDashboard = () => {
     upcomingKhateebs: 0,
     weeklyContent: 0,
     gems: 0,
-    salawaat: 0
+    salawaat: 0,
+    events: 0
   });
   const navigate = useNavigate();
 
@@ -18,13 +19,15 @@ const AdminDashboard = () => {
     const weeklyContent = getData('weeklyContent');
     const gems = getData('gems');
     const salawaat = getData('salawaat');
+    const events = getData('events');
 
     setStats({
       khateebs: khateebs.length || 0,
       upcomingKhateebs: khateebs.filter(k => k.isUpcoming).length || 0,
       weeklyContent: weeklyContent.length || 0,
       gems: gems.length || 0,
-      salawaat: salawaat.length || 0
+      salawaat: salawaat.length || 0,
+      events: events.length || 0
     });
   }, []);
 
@@ -90,6 +93,13 @@ const AdminDashboard = () => {
       link: '/admin/sunnah-reminders',
       icon: '🌙',
       count: getData('sunnahReminders').length || 0
+    },
+    {
+      title: 'Events & Calendar',
+      description: 'Manage events and calendar schedule',
+      link: '/admin/events',
+      icon: '📅',
+      count: stats.events
     },
     {
       title: 'Settings',
