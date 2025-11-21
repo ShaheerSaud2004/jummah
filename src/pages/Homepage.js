@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { getData } from '../utils/dataManager';
 import OptimizedImage from '../components/OptimizedImage';
 import LivestreamEmbed from '../components/LivestreamEmbed';
-import UpcomingEventsWidget from '../components/UpcomingEventsWidget';
 import logoImage from '../assets/logo.jpg';
 
 const Homepage = () => {
@@ -213,7 +212,7 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Weekly Khutbah Card */}
+        {/* Weekly Khutbah Card */}
         {upcomingKhateeb && (
           <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
             {/* Background Decorative Elements */}
@@ -326,15 +325,6 @@ const Homepage = () => {
         </section>
       )}
 
-      {/* Upcoming Events Widget */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <UpcomingEventsWidget />
-          </div>
-        </div>
-      </section>
-
       {/* Weekly Updates Preview */}
       <section className="py-20 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -432,7 +422,7 @@ const Homepage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </span>
-            </Link>
+              </Link>
             
             <Link to="/parking" className="card-rutgers p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
               <div className="w-20 h-20 bg-gradient-to-br from-rutgers-red to-rutgers-dark-red rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -448,7 +438,7 @@ const Homepage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </span>
-            </Link>
+              </Link>
             
             <Link to="/kahf-circle" className="card-rutgers p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
               <div className="w-20 h-20 bg-gradient-to-br from-rutgers-red to-rutgers-dark-red rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -462,7 +452,7 @@ const Homepage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </span>
-            </Link>
+              </Link>
           </div>
         </div>
       </section>

@@ -12,7 +12,6 @@ const Navbar = () => {
     { path: '/', label: 'Home' },
     { path: '/khateebs', label: 'Khateebs' },
     { path: '/updates', label: 'Weekly Updates' },
-    { path: '/calendar', label: 'Calendar' },
     { path: '/kahf-circle', label: 'Al-Kahf Circle' },
     { path: '/gems', label: 'Gems' },
     { path: '/salawaat', label: 'Salawaat' },
