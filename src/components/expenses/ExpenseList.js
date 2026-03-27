@@ -7,11 +7,11 @@ function formatDate(isoString) {
 
 export default function ExpenseList({ expenses, onEdit, onDelete }) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
       <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Expense List</h2>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full text-left text-sm">
+        <table className="min-w-[760px] text-left text-xs sm:min-w-full sm:text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-slate-500 dark:border-slate-700 dark:text-slate-400">
               <th className="px-2 py-2">Person</th>
@@ -41,7 +41,7 @@ export default function ExpenseList({ expenses, onEdit, onDelete }) {
                   <td className="px-2 py-3 text-slate-700 dark:text-slate-300">{expense.note || '-'}</td>
                   <td className="px-2 py-3 text-slate-700 dark:text-slate-300">{formatDate(expense.createdAt)}</td>
                   <td className="px-2 py-3">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 whitespace-nowrap">
                       <button
                         type="button"
                         onClick={() => onEdit(expense)}

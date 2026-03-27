@@ -4,6 +4,7 @@ import ExpenseForm from '../components/expenses/ExpenseForm';
 import ExpenseList from '../components/expenses/ExpenseList';
 import PersonCard from '../components/expenses/PersonCard';
 import SpendingChart from '../components/expenses/SpendingChart';
+import ExpensePieChart from '../components/expenses/ExpensePieChart';
 import { expenseBackendConfig } from '../config/expenseBackendConfig';
 
 const STORAGE_KEYS = {
@@ -11,7 +12,9 @@ const STORAGE_KEYS = {
   people: 'expenses.hidden.people',
   expenses: 'expenses.hidden.expenses',
   darkMode: 'expenses.hidden.darkMode',
+  version: 'expenses.hidden.version',
 };
+const STORAGE_VERSION = '2';
 
 const EMPTY_FORM = {
   person: '',
@@ -25,6 +28,56 @@ const LEGACY_CATEGORY_MAP = {
   Other: 'Snacks',
 };
 
+const TEAM_BASELINE = {
+  budget: 6522.13,
+  foodFromAlBasha: 2100.0,
+  peopleRows: [
+    { name: 'Zain Sumor', values: [144.92, 35.94, 61.1, 56.73] },
+    { name: 'Ahmed Haris', values: [20.79, 40.49, 15.86, 17.99, 44.75] },
+    { name: 'Maimuna', values: [164.59, 58.24] },
+  ],
+};
+
+const TEAM_BASELINE_NON_FOOD_TOTAL = TEAM_BASELINE.peopleRows.reduce(
+  (peopleTotal, row) => peopleTotal + row.values.reduce((rowTotal, value) => rowTotal + value, 0),
+  0
+);
+const TEAM_BASELINE_TOTAL_EXPENSES = TEAM_BASELINE.foodFromAlBasha + TEAM_BASELINE_NON_FOOD_TOTAL;
+const TEAM_BASELINE_REMAINING = TEAM_BASELINE.budget - TEAM_BASELINE_TOTAL_EXPENSES;
+
+const TEAM_BASELINE_SEED_EXPENSES = [
+  {
+    id: 'seed-food-al-basha',
+    person: 'Team',
+    amount: TEAM_BASELINE.foodFromAlBasha,
+    category: 'Food',
+    note: 'Food from AL basha',
+    createdAt: '2026-03-01T12:00:00.000Z',
+  },
+  ...TEAM_BASELINE.peopleRows.flatMap((row, rowIndex) =>
+    row.values.map((value, valueIndex) => ({
+      id: `seed-${rowIndex}-${valueIndex}`,
+      person: row.name,
+      amount: value,
+      category: valueIndex % 2 === 0 ? 'Weekly Khateeb Gifts' : 'Snacks',
+      note: 'Team baseline entry',
+      createdAt: `2026-03-${String(2 + rowIndex).padStart(2, '0')}T12:${String(valueIndex)
+        .padStart(2, '0')}:00.000Z`,
+    }))
+  ),
+];
+const TEAM_BASELINE_CATEGORY_TOTALS = {
+  Food: TEAM_BASELINE.foodFromAlBasha,
+  'Weekly Khateeb Gifts': TEAM_BASELINE.peopleRows.reduce(
+    (sum, row) => sum + row.values.filter((_, index) => index % 2 === 0).reduce((a, b) => a + b, 0),
+    0
+  ),
+  Snacks: TEAM_BASELINE.peopleRows.reduce(
+    (sum, row) => sum + row.values.filter((_, index) => index % 2 !== 0).reduce((a, b) => a + b, 0),
+    0
+  ),
+};
+
 function normalizeAmount(value) {
   const parsed = Number(value);
   if (Number.isNaN(parsed) || parsed <= 0) {
@@ -34,13 +87,31 @@ function normalizeAmount(value) {
   return Number(parsed.toFixed(2));
 }
 
+function formatCurrency(value) {
+  return `$${value.toFixed(2)}`;
+}
+
 export default function ExpensesHiddenPage() {
   const isSupabasePublicConfigPresent = Boolean(
     expenseBackendConfig.supabaseUrl && expenseBackendConfig.supabaseAnonKey
   );
-  const [budget, setBudget] = useState(() => Number(localStorage.getItem(STORAGE_KEYS.budget)) || 1000);
-  const [people, setPeople] = useState(() => JSON.parse(localStorage.getItem(STORAGE_KEYS.people) || '[]'));
-  const [expenses, setExpenses] = useState(() => JSON.parse(localStorage.getItem(STORAGE_KEYS.expenses) || '[]'));
+  const [budget, setBudget] = useState(() => Number(localStorage.getItem(STORAGE_KEYS.budget)) || TEAM_BASELINE.budget);
+  const [people, setPeople] = useState(() => {
+    const savedPeople = JSON.parse(localStorage.getItem(STORAGE_KEYS.people) || '[]');
+    if (savedPeople.length > 0) {
+      return savedPeople;
+    }
+
+    return ['Team', ...TEAM_BASELINE.peopleRows.map((row) => row.name)];
+  });
+  const [expenses, setExpenses] = useState(() => {
+    const savedExpenses = JSON.parse(localStorage.getItem(STORAGE_KEYS.expenses) || '[]');
+    if (savedExpenses.length > 0) {
+      return savedExpenses;
+    }
+
+    return TEAM_BASELINE_SEED_EXPENSES;
+  });
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem(STORAGE_KEYS.darkMode) === 'true');
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [newPersonName, setNewPersonName] = useState('');
@@ -51,13 +122,39 @@ export default function ExpensesHiddenPage() {
   const [expandedPeople, setExpandedPeople] = useState({});
 
   useEffect(() => {
-    // One-time migration for existing local data.
+    // One-time category migration for existing local data.
     setExpenses((prev) =>
       prev.map((expense) => ({
         ...expense,
         category: LEGACY_CATEGORY_MAP[expense.category] || expense.category,
       }))
     );
+  }, []);
+
+  useEffect(() => {
+    // Data migration: move legacy default budget (1000) to your provided baseline.
+    const existingVersion = localStorage.getItem(STORAGE_KEYS.version);
+    if (existingVersion === STORAGE_VERSION) {
+      return;
+    }
+
+    const savedBudgetRaw = localStorage.getItem(STORAGE_KEYS.budget);
+    const savedBudget = savedBudgetRaw ? Number(savedBudgetRaw) : null;
+    if (savedBudget === null || savedBudget === 1000) {
+      setBudget(TEAM_BASELINE.budget);
+    }
+
+    const savedPeople = JSON.parse(localStorage.getItem(STORAGE_KEYS.people) || '[]');
+    if (!Array.isArray(savedPeople) || savedPeople.length === 0) {
+      setPeople(['Team', ...TEAM_BASELINE.peopleRows.map((row) => row.name)]);
+    }
+
+    const savedExpenses = JSON.parse(localStorage.getItem(STORAGE_KEYS.expenses) || '[]');
+    if (!Array.isArray(savedExpenses) || savedExpenses.length === 0) {
+      setExpenses(TEAM_BASELINE_SEED_EXPENSES);
+    }
+
+    localStorage.setItem(STORAGE_KEYS.version, STORAGE_VERSION);
   }, []);
 
   useEffect(() => {
@@ -208,12 +305,12 @@ export default function ExpensesHiddenPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 px-4 py-8 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+    <div className="min-h-screen bg-slate-100 px-3 py-5 text-slate-900 transition-colors sm:px-4 sm:py-8 dark:bg-slate-950 dark:text-slate-100">
       <div className="mx-auto max-w-6xl space-y-6">
-        <header className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <header className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Expense Tracker</h1>
+              <h1 className="text-2xl font-bold tracking-tight">Team Expense Center</h1>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 Private view route: <span className="font-medium">/xyz/epsnes</span>
               </p>
@@ -232,6 +329,74 @@ export default function ExpensesHiddenPage() {
               </button>
             </div>
           </div>
+        </header>
+
+        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Team Snapshot (Read-only)</h2>
+            <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+              Team members only
+            </span>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+              <p className="text-xs text-slate-500 dark:text-slate-400">Budget</p>
+              <p className="mt-1 text-xl font-bold text-slate-900 dark:text-slate-100">{formatCurrency(TEAM_BASELINE.budget)}</p>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+              <p className="text-xs text-slate-500 dark:text-slate-400">Food (Food from AL basha)</p>
+              <p className="mt-1 text-xl font-bold text-rose-600 dark:text-rose-400">{formatCurrency(TEAM_BASELINE.foodFromAlBasha)}</p>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+              <p className="text-xs text-slate-500 dark:text-slate-400">Total Expenses</p>
+              <p className="mt-1 text-xl font-bold text-rose-600 dark:text-rose-400">{formatCurrency(TEAM_BASELINE_TOTAL_EXPENSES)}</p>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+              <p className="text-xs text-slate-500 dark:text-slate-400">Remaining</p>
+              <p className="mt-1 text-xl font-bold text-emerald-600 dark:text-emerald-400">{formatCurrency(TEAM_BASELINE_REMAINING)}</p>
+            </div>
+          </div>
+
+          <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+            <table className="min-w-[640px] text-xs sm:min-w-full sm:text-sm">
+              <thead className="bg-slate-50 dark:bg-slate-800">
+                <tr>
+                  <th className="px-3 py-2 text-left font-semibold text-slate-700 dark:text-slate-200">Name</th>
+                  <th className="px-3 py-2 text-left font-semibold text-slate-700 dark:text-slate-200">Values</th>
+                  <th className="px-3 py-2 text-right font-semibold text-slate-700 dark:text-slate-200">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {TEAM_BASELINE.peopleRows.map((row) => {
+                  const rowTotal = row.values.reduce((sum, value) => sum + value, 0);
+                  return (
+                    <tr key={row.name} className="border-t border-slate-200 dark:border-slate-700">
+                      <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">{row.name}</td>
+                      <td className="px-3 py-2 text-slate-600 dark:text-slate-300">
+                        {row.values.map((value) => formatCurrency(value)).join(' • ')}
+                      </td>
+                      <td className="px-3 py-2 text-right font-semibold text-slate-900 dark:text-slate-100">
+                        {formatCurrency(rowTotal)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-4">
+            <ExpensePieChart categoryTotals={TEAM_BASELINE_CATEGORY_TOTALS} title="Team Snapshot Pie Chart" />
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Expense Manager (Editable)</h2>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Add/update/delete expenses here. This section is for your ongoing entries.
+          </p>
+
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <label className="space-y-1">
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Total Budget</span>
@@ -267,11 +432,11 @@ export default function ExpensesHiddenPage() {
               </div>
             </label>
           </div>
-        </header>
+        </section>
 
         <Dashboard budget={budget} totalExpenses={totalExpenses} remainingBalance={remainingBalance} />
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-6 xl:grid-cols-3">
           <ExpenseForm
             formData={formData}
             setFormData={setFormData}
@@ -282,6 +447,7 @@ export default function ExpensesHiddenPage() {
             isEditing={Boolean(editingId)}
           />
           <SpendingChart categoryTotals={categoryTotals} />
+          <ExpensePieChart categoryTotals={categoryTotals} title="Live Expense Pie Chart" />
         </div>
 
         <section className="space-y-3">
@@ -291,7 +457,7 @@ export default function ExpensesHiddenPage() {
               Add people and expenses to view per-person totals.
             </p>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 lg:grid-cols-2">
               {personGroups.map((group) => (
                 <PersonCard
                   key={group.person}
@@ -308,7 +474,7 @@ export default function ExpensesHiddenPage() {
           )}
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
           <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
           <div className="grid gap-4 md:grid-cols-3">
             <label className="space-y-1">
