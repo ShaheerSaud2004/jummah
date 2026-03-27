@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Chatbot from './components/Chatbot';
@@ -31,48 +31,60 @@ import AdminLivestream from './pages/admin/AdminLivestream';
 import AdminTeam from './pages/admin/AdminTeam';
 import AdminSunnahReminders from './pages/admin/AdminSunnahReminders';
 import AdminSettings from './pages/admin/AdminSettings';
+import ExpensesHiddenPage from './pages/ExpensesHiddenPage';
+
+function AppContent() {
+  const location = useLocation();
+  const isExpensePrivateRoute = location.pathname === '/xyz/epsnes' || location.pathname === '/xyz/expenses';
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {!isExpensePrivateRoute ? <Navbar /> : null}
+      <main>
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/khateebs" element={<Khateebs />} />
+          <Route path="/khateebs/:id" element={<KhateebDetail />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/updates" element={<WeeklyUpdates />} />
+          <Route path="/gems" element={<Gems />} />
+          <Route path="/salawaat" element={<Salawaat />} />
+          <Route path="/kahf-circle" element={<KahfCircle />} />
+          <Route path="/parking" element={<Parking />} />
+          <Route path="/team-application" element={<TeamApplication />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/sunnah-reminders" element={<SunnahReminders />} />
+          <Route path="/hoj" element={<HOJ />} />
+          <Route path="/adab" element={<Adab />} />
+          <Route path="/xyz/epsnes" element={<ExpensesHiddenPage />} />
+          <Route path="/xyz/expenses" element={<ExpensesHiddenPage />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+          <Route path="/admin/khateebs" element={<AdminRoute><AdminKhateebs /></AdminRoute>} />
+          <Route path="/admin/weekly-content" element={<AdminRoute><AdminWeeklyContent /></AdminRoute>} />
+          <Route path="/admin/gems" element={<AdminRoute><AdminGems /></AdminRoute>} />
+          <Route path="/admin/salawaat" element={<AdminRoute><AdminSalawaat /></AdminRoute>} />
+          <Route path="/admin/kahf-circle" element={<AdminRoute><AdminKahfCircle /></AdminRoute>} />
+          <Route path="/admin/livestream" element={<AdminRoute><AdminLivestream /></AdminRoute>} />
+          <Route path="/admin/team" element={<AdminRoute><AdminTeam /></AdminRoute>} />
+          <Route path="/admin/sunnah-reminders" element={<AdminRoute><AdminSunnahReminders /></AdminRoute>} />
+          <Route path="/admin/settings" element={<AdminRoute><AdminSettings /></AdminRoute>} />
+        </Routes>
+      </main>
+      {!isExpensePrivateRoute ? <Footer /> : null}
+      {!isExpensePrivateRoute ? <Chatbot /> : null}
+      {!isExpensePrivateRoute ? <BackToTop /> : null}
+    </div>
+  );
+}
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <main>
-          <Routes>
-            <Route path="/" element={<Homepage />} />
-            <Route path="/khateebs" element={<Khateebs />} />
-            <Route path="/khateebs/:id" element={<KhateebDetail />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/updates" element={<WeeklyUpdates />} />
-            <Route path="/gems" element={<Gems />} />
-            <Route path="/salawaat" element={<Salawaat />} />
-            <Route path="/kahf-circle" element={<KahfCircle />} />
-            <Route path="/parking" element={<Parking />} />
-            <Route path="/team-application" element={<TeamApplication />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/sunnah-reminders" element={<SunnahReminders />} />
-            <Route path="/hoj" element={<HOJ />} />
-            <Route path="/adab" element={<Adab />} />
-            
-            {/* Admin Routes */}
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-            <Route path="/admin/khateebs" element={<AdminRoute><AdminKhateebs /></AdminRoute>} />
-            <Route path="/admin/weekly-content" element={<AdminRoute><AdminWeeklyContent /></AdminRoute>} />
-            <Route path="/admin/gems" element={<AdminRoute><AdminGems /></AdminRoute>} />
-            <Route path="/admin/salawaat" element={<AdminRoute><AdminSalawaat /></AdminRoute>} />
-            <Route path="/admin/kahf-circle" element={<AdminRoute><AdminKahfCircle /></AdminRoute>} />
-            <Route path="/admin/livestream" element={<AdminRoute><AdminLivestream /></AdminRoute>} />
-            <Route path="/admin/team" element={<AdminRoute><AdminTeam /></AdminRoute>} />
-            <Route path="/admin/sunnah-reminders" element={<AdminRoute><AdminSunnahReminders /></AdminRoute>} />
-            <Route path="/admin/settings" element={<AdminRoute><AdminSettings /></AdminRoute>} />
-          </Routes>
-        </main>
-        <Footer />
-        <Chatbot />
-        <BackToTop />
-      </div>
+      <AppContent />
     </Router>
   );
 }
