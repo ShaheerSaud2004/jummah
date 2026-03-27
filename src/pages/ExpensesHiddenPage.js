@@ -305,14 +305,19 @@ export default function ExpensesHiddenPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 px-3 py-5 text-slate-900 transition-colors sm:px-4 sm:py-8 dark:bg-slate-950 dark:text-slate-100">
-      <div className="mx-auto max-w-6xl space-y-6">
-        <header className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950">
+    <div className="relative min-h-screen overflow-hidden bg-slate-100 px-3 py-5 text-slate-900 transition-colors sm:px-4 sm:py-8 dark:bg-slate-950 dark:text-slate-100">
+      <div className="pointer-events-none absolute -top-20 left-1/4 h-72 w-72 rounded-full bg-sky-300/30 blur-3xl dark:bg-sky-900/40" />
+      <div className="pointer-events-none absolute right-0 top-1/3 h-72 w-72 rounded-full bg-indigo-300/20 blur-3xl dark:bg-indigo-900/30" />
+      <div className="relative mx-auto w-full max-w-[1400px] space-y-6">
+        <header className="rounded-3xl border border-slate-200/80 bg-white/85 p-4 shadow-sm backdrop-blur sm:p-6 dark:border-slate-700/70 dark:bg-slate-900/75">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Team Expense Center</h1>
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-sky-600 dark:text-sky-300">
+                Rutgers Team Finance
+              </p>
+              <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">Team Expense Center</h1>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Private view route: <span className="font-medium">/xyz/epsnes</span>
+                Premium private dashboard for team + internal admin tracking.
               </p>
               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 Backend status: {isSupabasePublicConfigPresent ? 'Supabase public keys detected' : 'Local storage mode'}
@@ -323,17 +328,22 @@ export default function ExpensesHiddenPage() {
               <button
                 type="button"
                 onClick={() => setDarkMode((prev) => !prev)}
-                className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold transition hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                className="rounded-2xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
               >
                 {darkMode ? 'On' : 'Off'}
               </button>
             </div>
           </div>
+          <div className="mt-4 inline-flex rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+            Private route: /xyz/epsnes
+          </div>
         </header>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
+        <section className="rounded-3xl border border-slate-200/80 bg-white/90 p-4 shadow-sm sm:p-6 dark:border-slate-700/70 dark:bg-slate-900/80">
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Team Snapshot (Read-only)</h2>
+            <h2 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+              Team Snapshot (Read-only)
+            </h2>
             <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
               Team members only
             </span>
@@ -391,8 +401,10 @@ export default function ExpensesHiddenPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Expense Manager (Editable)</h2>
+        <section className="rounded-3xl border border-slate-200/80 bg-white/90 p-4 shadow-sm sm:p-6 dark:border-slate-700/70 dark:bg-slate-900/80">
+          <h2 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+            Expense Manager (Editable)
+          </h2>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Add/update/delete expenses here. This section is for your ongoing entries.
           </p>
@@ -406,7 +418,7 @@ export default function ExpensesHiddenPage() {
                 step="0.01"
                 value={budget}
                 onChange={(event) => setBudget(Math.max(0, Number(event.target.value || 0)))}
-                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-emerald-500 transition focus:ring-2 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-sky-500 transition focus:ring-2 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
               />
             </label>
             <label className="space-y-1">
@@ -417,7 +429,7 @@ export default function ExpensesHiddenPage() {
                   value={newPersonName}
                   onChange={(event) => setNewPersonName(event.target.value)}
                   placeholder="Type name"
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-emerald-500 transition focus:ring-2 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-sky-500 transition focus:ring-2 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
                 />
                 <button
                   type="button"
@@ -425,7 +437,7 @@ export default function ExpensesHiddenPage() {
                     handleAddPerson(newPersonName);
                     setNewPersonName('');
                   }}
-                  className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
+                  className="rounded-2xl bg-gradient-to-r from-sky-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:from-sky-500 hover:to-indigo-500"
                 >
                   Add
                 </button>
@@ -474,7 +486,7 @@ export default function ExpensesHiddenPage() {
           )}
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
+        <section className="rounded-3xl border border-slate-200/80 bg-white/90 p-4 shadow-sm sm:p-5 dark:border-slate-700/70 dark:bg-slate-900/80">
           <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
           <div className="grid gap-4 md:grid-cols-3">
             <label className="space-y-1">

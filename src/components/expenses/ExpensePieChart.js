@@ -39,12 +39,12 @@ export default function ExpensePieChart({ categoryTotals, title = 'Category Spli
   }, [categoryTotals]);
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
+    <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 p-4 shadow-sm sm:p-5 dark:border-slate-700/70 dark:bg-slate-900/80">
       <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
-      <div className="grid items-center gap-4 sm:grid-cols-[180px_1fr]">
-        <div className="mx-auto">
+      <div className="grid items-center gap-4 md:grid-cols-[minmax(0,180px)_minmax(0,1fr)]">
+        <div className="mx-auto w-full max-w-[180px]">
           <div
-            className="h-32 w-32 rounded-full border-8 border-white shadow-sm sm:h-40 sm:w-40 dark:border-slate-900"
+            className="mx-auto aspect-square w-[min(100%,10rem)] rounded-full border-[6px] border-white shadow-sm sm:w-[min(100%,11rem)] sm:border-8 dark:border-slate-900"
             style={{ background: chartData.gradient }}
           />
           <p className="mt-3 text-center text-sm text-slate-500 dark:text-slate-400">
@@ -52,7 +52,7 @@ export default function ExpensePieChart({ categoryTotals, title = 'Category Spli
           </p>
         </div>
 
-        <div className="space-y-2">
+        <div className="min-w-0 space-y-2">
           {chartData.segments.length === 0 ? (
             <p className="text-sm text-slate-500 dark:text-slate-400">No spending data yet.</p>
           ) : (
@@ -63,7 +63,9 @@ export default function ExpensePieChart({ categoryTotals, title = 'Category Spli
                     className="inline-block h-3 w-3 rounded-full"
                     style={{ backgroundColor: segment.color }}
                   />
-                  <span className="truncate text-sm font-medium text-slate-700 dark:text-slate-200">{segment.name}</span>
+                  <span className="truncate text-sm font-medium text-slate-700 dark:text-slate-200">
+                    {segment.name}
+                  </span>
                 </div>
                 <div className="text-left text-sm sm:text-right">
                   <p className="font-semibold text-slate-900 dark:text-slate-100">${segment.amount.toFixed(2)}</p>
